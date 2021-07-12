@@ -91,15 +91,6 @@ function validate() {
     resetErrorMessages(element);
     validateInput(element);
   });
-  /*
-  allFormInputs.forEach(
-    element =>
-      function() {
-        resetErrorMessages(element);
-        validateInput(element);
-      }
-  );
-  */
 }
 
 //remove error messages and the red border
