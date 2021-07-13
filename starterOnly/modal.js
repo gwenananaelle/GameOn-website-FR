@@ -65,7 +65,7 @@ const allFormInputs = document.querySelectorAll("form .formData input");
 modalBtn.forEach(btn => btn.addEventListener("click", launchModal));
 // close modal event
 closeModalBtn.forEach(btn => btn.addEventListener("click", closeModal));
-// validate after input
+// there is two validation, one during input and one at validation (submit button), this one is for input
 allFormInputs.forEach(element =>
   element.addEventListener("input", function() {
     event.stopPropagation();
@@ -84,7 +84,7 @@ function closeModal() {
   modalbg.style.display = "none";
 }
 
-//validate the form
+//there is two validation, one during input and one at validation (submit button), this one is for validation
 function validate() {
   event.preventDefault();
   allFormInputs.forEach(function callbackFn(element) {
@@ -93,7 +93,7 @@ function validate() {
   });
 }
 
-//remove error messages and the red border
+//remove error messages and the red borders
 function resetErrorMessages(element) {
   let hasFormData =
     element.parentNode && element.parentNode.classList.contains("formData");
@@ -110,6 +110,7 @@ function resetErrorMessages(element) {
   }
 }
 
+//add an error message, is called by validateInput
 function addErrorMessage(element, errorMessage) {
   element.parentNode.setAttribute("data-error-visible", "true");
   const error = document.createElement("span");
