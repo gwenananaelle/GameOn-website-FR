@@ -69,7 +69,11 @@ closeModalBtn.forEach(btn => btn.addEventListener("click", closeModal));
 allFormInputs.forEach(element =>
   element.addEventListener("input", function() {
     event.stopPropagation();
-    validateInput(element);
+    resetErrorMessages(element);
+    if (isValidInput(element)) {
+    } else {
+      addErrorMessage(element);
+    }
   })
 );
 
@@ -87,10 +91,18 @@ function closeModal() {
 //there is two validation, one during input and one at validation (submit button), this one is for validation
 function validate() {
   event.preventDefault();
-  allFormInputs.forEach(function callbackFn(element) {
+  let isFormValid = true;
+  allFormInputs.forEach(element => {
     resetErrorMessages(element);
-    validateInput(element);
+    if (!isValidInput(element)) {
+      addErrorMessage(element);
+      isFormValid = false;
+    }
   });
+  if (isFormValid) {
+    document.getElementById("myForm").submit();
+    showConfirmationMessage();
+  }
 }
 
 //remove error messages and the red borders
@@ -110,23 +122,26 @@ function resetErrorMessages(element) {
   }
 }
 
-//add an error message, is called by validateInput
-function addErrorMessage(element, errorMessage) {
+//add an error message, is called by isValidInput
+function addErrorMessage(element) {
   element.parentNode.setAttribute("data-error-visible", "true");
   const error = document.createElement("span");
-  error.setAttribute("data-error", errorMessage);
+  const constraint = constraints.find(elmt => elmt.type === element.type);
+  error.setAttribute("data-error", constraint.error);
   element.insertAdjacentElement("afterend", error);
 }
 
 //compare the input to the constraint in the list, if there is no constraint for the type it won't do anything
-function validateInput(element) {
+function isValidInput(element) {
   const constraint = constraints.find(elmt => elmt.type === element.type);
   if (constraint) {
     const condition = constraint.condition;
-    if (!condition(element)) {
-      addErrorMessage(element, constraint.error);
-    } else {
-      resetErrorMessages(element);
-    }
+    return condition(element);
   }
+}
+
+//confirmationmessage
+function showConfirmationMessage() {
+  let modalBody = document.querySelector(".modal-body");
+  modalBody.innerHTML = "<p>Merci ! Votre réservation a été reçue.</p>";
 }
