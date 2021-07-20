@@ -100,7 +100,7 @@ function validate() {
     }
   });
   if (isFormValid) {
-    document.getElementById("myForm").submit();
+    submitFormData();
     showConfirmationMessage();
   }
 }
@@ -144,4 +144,24 @@ function isValidInput(element) {
 function showConfirmationMessage() {
   let modalBody = document.querySelector(".modal-body");
   modalBody.innerHTML = "<p>Merci ! Votre réservation a été reçue.</p>";
+}
+
+//submit formData
+function submitFormData() {
+  var formData = new FormData(document.getElementById("myForm"));
+  fetch("https://mockbin.com/request", {
+    method: "POST",
+    body: formData
+  })
+    .then(function(res) {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then(function(value) {
+      console.log(value.postData.params);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    });
 }
