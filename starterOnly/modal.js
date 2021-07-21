@@ -120,7 +120,16 @@ function isValidInput(element) {
  */
 function showConfirmationMessage() {
   let modalBody = document.querySelector(".modal-body");
-  modalBody.innerHTML = "<p>Merci ! Votre réservation a été reçue.</p>";
+  modalBody.innerHTML = "";
+  let confirmationMessage = document.createElement("p");
+  confirmationMessage.setAttribute("class", "confirmation-text");
+  confirmationMessage.innerText = "Merci ! Votre réservation a été reçue.";
+  modalBody.appendChild(confirmationMessage);
+  let closeButton = document.createElement("button");
+  closeButton.setAttribute("class", "btn-close button");
+  closeButton.innerText = "Fermer";
+  closeButton.addEventListener("click", closeModal);
+  modalBody.appendChild(closeButton);
 }
 
 /**

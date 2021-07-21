@@ -188,6 +188,13 @@ main {
 .modal-body {
   padding: 15px 8%;
   margin: 15px auto;
+  min-height: 670px;
+}
+p.confirmation-text {
+  min-height: 628px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 label {
@@ -328,7 +335,8 @@ span[data-error]::after {
   transform: rotate(-45deg);
 }
 .btn-submit,
-.btn-signup {
+.btn-signup,
+.btn-close {
   background: #fe142f;
   display: block;
   margin: 0 auto;
