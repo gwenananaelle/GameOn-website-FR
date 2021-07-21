@@ -18,17 +18,6 @@ const allFormInputs = document.querySelectorAll("form .formData input");
 modalBtn.forEach(btn => btn.addEventListener("click", launchModal));
 // close modal event
 closeModalBtn.forEach(btn => btn.addEventListener("click", closeModal));
-// there is two validation, one during input and one at validation (submit button), this one is for input
-allFormInputs.forEach(element =>
-  element.addEventListener("input", function() {
-    event.stopPropagation();
-    resetErrorMessages(element);
-    if (isValidInput(element)) {
-    } else {
-      addErrorMessage(element);
-    }
-  })
-);
 
 // launch modal form
 function launchModal() {
@@ -41,15 +30,38 @@ function closeModal() {
   modalbg.style.display = "none";
 }
 
-//there is two validation, one during input and one at validation (submit button), this one is for validation
+/**
+ * add input event to all input elements with the formData class, and trigger the getElementValidation function
+ */
+allFormInputs.forEach(element =>
+  element.addEventListener("input", function() {
+    getElementValidation(element);
+  })
+);
+/**
+ * reset error message, check the input, if false create error message and return false
+ * @param {Node} element
+ * @return {Boolean}
+ */
+function getElementValidation(element) {
+  resetErrorMessages(element);
+  if (!isValidInput(element)) {
+    addErrorMessage(element);
+    return false;
+  }
+  return true;
+}
+
+/**
+ * onSubmit form, check if the form is valid
+ */
 function validate() {
   event.preventDefault();
   let isFormValid = true;
   allFormInputs.forEach(element => {
-    resetErrorMessages(element);
-    if (!isValidInput(element)) {
-      addErrorMessage(element);
+    if (!getElementValidation(element)) {
       isFormValid = false;
+      return false;
     }
   });
   if (isFormValid) {
@@ -58,7 +70,10 @@ function validate() {
   }
 }
 
-//remove error messages and the red borders
+/**
+ * if Error message remove it
+ * @param {Node} element
+ */
 function resetErrorMessages(element) {
   let hasFormData =
     element.parentNode && element.parentNode.classList.contains("formData");
@@ -75,7 +90,10 @@ function resetErrorMessages(element) {
   }
 }
 
-//add an error message, is called by isValidInput
+/**
+ * create an error message by setting attribute data-error-visible to true and creating a span sibling element with the data-error class
+ * @param {Node} element
+ */
 function addErrorMessage(element) {
   element.parentNode.setAttribute("data-error-visible", "true");
   const error = document.createElement("span");
@@ -84,7 +102,11 @@ function addErrorMessage(element) {
   element.insertAdjacentElement("afterend", error);
 }
 
-//compare the input to the constraint in the list, if there is no constraint for the type it won't do anything
+/**
+ * check the input with the constraint of for the same input type
+ * @param {Node} element
+ * @return {Boolean}
+ */
 function isValidInput(element) {
   const constraint = constraints.find(elmt => elmt.type === element.type);
   if (constraint) {
@@ -93,13 +115,17 @@ function isValidInput(element) {
   }
 }
 
-//confirmationmessage
+/**
+ * change the HTML content for modalBody to show the confirmation message
+ */
 function showConfirmationMessage() {
   let modalBody = document.querySelector(".modal-body");
   modalBody.innerHTML = "<p>Merci ! Votre réservation a été reçue.</p>";
 }
 
-//submit formData
+/**
+ * send object FormData to a mock url
+ */
 function submitFormData() {
   var formData = new FormData(document.getElementById("myForm"));
   fetch("https://mockbin.com/request", {
